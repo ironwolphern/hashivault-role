@@ -1,0 +1,10 @@
+---
+- name: "Finalize playbook | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  tags: [always, finalize]
+  block:
+
+  - name: "Clean tmp files and directories | finish | {{ _title_pfx }}"
+    ansible.builtin.file:
+      path: "{{ hashivault__tmp_dir }}"
+      state: absent

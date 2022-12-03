@@ -1,0 +1,29 @@
+---
+- name: "Playbook for deploy Hashicorp Vault | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  block:
+
+  - name: "Initialize playbook | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: init.yml
+    tags: [always, initialize]
+
+  - name: "Install Hashicorp Vault | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: install.yml
+    tags: [never, install]
+
+  - name: "Initialize Hashicorp Vault | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: init_vault.yml
+    tags: [never, init_vault, install]
+
+  - name: "Remove Hashicorp Vault | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: remove.yml
+    tags: [never, remove]
+
+  - name: "Finalize playbook | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: finish.yml
+    tags: [always, finalize]

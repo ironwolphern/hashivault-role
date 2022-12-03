@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: hashivault
+  author: Fernando Hernandez San Felipe
+  description: Role for deploy and install Hashicorp Vault server
+  company: Orphenix IT
+  license: license MIT
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+
+  galaxy_tags: []
+
+dependencies: []

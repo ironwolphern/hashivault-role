@@ -1,0 +1,132 @@
+---
+- name: "Install Hashicorp Vault server | install | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  become: true
+  tags: install
+  block:
+
+    - name: "Check required parameters | install | {{ _title_pfx }}"
+      ansible.builtin.assert:
+        that:
+          - "{{ item }}|d('',true)|length > 0"
+        fail_msg: "Required parameter '{{ item }}' is not defined."
+        success_msg: "Required parameter '{{ item }}' is ok."
+        quiet: true
+      loop:
+        - hashivault__version
+        - hashivault__server_fqdn
+
+    - name: "Install dependencies | install | {{ _title_pfx }}"
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ hashivault__base_packages }}"
+
+    - name: "Create Hashicorp Vault user | install | {{ _title_pfx }}"
+      ansible.builtin.user:
+        name: "{{ hashivault__user }}"
+        shell: /bin/nologin
+        system: true
+        createhome: false
+        state: present
+
+    - name: "Create Hashicorp Vault group | install | {{ _title_pfx }}"
+      ansible.builtin.group:
+        name: "{{ hashivault__group }}"
+        system: true
+        state: present
+
+    - name: "Create Hashicorp Vault directories | install | {{ _title_pfx }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0750
+      loop:
+        - "{{ hashivault__config_dir }}"
+        - "{{ hashivault__install_dir }}"
+
+    - name: "Create Hashicorp Vault directories for tls and plugins | install | {{ _title_pfx }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0750
+      loop:
+        - "{{ hashivault__config_dir }}/tls"
+        - "{{ hashivault__install_dir }}/plugins"
+        - "{{ hashivault__install_dir }}/data"
+
+    - name: "Download binaries Hashicorp Vault | install | {{ _title_pfx }}"
+      ansible.builtin.get_url:
+        url: "https://releases.hashicorp.com/vault/{{ hashivault__version }}/vault_{{ hashivault__version }}_linux_amd64.zip"
+        dest: "{{ hashivault__tmp_dir }}/vault_{{ hashivault__version }}_linux_amd64.zip"
+        mode: 0644
+
+    - name: "Unzip binaries Hashicorp Vault | install | {{ _title_pfx }}"
+      ansible.builtin.unarchive:
+        src: "{{ hashivault__tmp_dir }}/vault_{{ hashivault__version }}_linux_amd64.zip"
+        dest: "{{ hashivault__install_dir }}"
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0750
+        remote_src: true
+
+    - name: "Set binaries Hashicorp Vault capabilities | install | {{ _title_pfx }}"
+      community.general.capabilities:
+        path: "{{ hashivault__install_dir }}/vault"
+        capability: cap_ipc_lock=+ep
+        state: present
+
+    - name: "Create link to Hashicorp Vault binary | install | {{ _title_pfx }}"
+      ansible.builtin.file:
+        src: "{{ hashivault__install_dir }}/vault"
+        dest: /usr/local/bin/vault
+        state: link
+        force: true
+
+    - name: "Copy certificate and CA certificates to Hashicorp Vault | install | {{ _title_pfx }}"
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ hashivault__config_dir }}/tls/{{ item }}"
+        owner: root
+        group: root
+        mode: 0644
+      loop:
+        - vault-cert.pem
+        - vault-ca.pem
+
+    - name: "Copy certificate key to Hashicorp Vault | install | {{ _title_pfx }}"
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ hashivault__config_dir }}/tls/{{ item }}"
+        owner: root
+        group: "{{ hashivault__group }}"
+        mode: 0640
+      loop:
+        - vault-key.pem
+
+    - name: "Create Hashicorp Vault config file | install | {{ _title_pfx }}"
+      ansible.builtin.template:
+        src: vault.hcl.j2
+        dest: "{{ hashivault__config_dir }}/vault.hcl"
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0640
+
+    - name: "Create Hashicorp Vault service file | install | {{ _title_pfx }}"
+      ansible.builtin.template:
+        src: vault.service.j2
+        dest: /etc/systemd/system/vault.service
+        owner: root
+        group: root
+        mode: 0644
+      notify: systemd_reload
+
+    - name: "Start Hashicorp Vault service | install | {{ _title_pfx }}"
+      ansible.builtin.systemd:
+        name: vault
+        state: started
+        enabled: true

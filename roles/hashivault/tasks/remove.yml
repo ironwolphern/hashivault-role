@@ -1,0 +1,40 @@
+---
+- name: "Remove Hashicorp Vault server | remove | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  become: true
+  tags: remove
+  block:
+
+    - name: "Stop Hashicorp Vault service | remove | {{ _title_pfx }}"
+      ansible.builtin.systemd:
+        name: vault
+        state: stopped
+        enabled: false
+
+    - name: "Remove Hashicorp Vault service | remove | {{ _title_pfx }}"
+      ansible.builtin.file:
+        path: /etc/systemd/system/vault.service
+        state: absent
+
+    - name: "Remove Hashicorp Vault directories | remove | {{ _title_pfx }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ hashivault__config_dir }}"
+        - "{{ hashivault__install_dir }}"
+
+    - name: "Unset Hashicorp Vault path env | remove | {{ _title_pfx }}"
+      ansible.builtin.file:
+        path: /etc/profile.d/hashivault.sh
+        state: absent
+
+    - name: "Delete Hashicorp Vault user | remove | {{ _title_pfx }}"
+      ansible.builtin.user:
+        name: "{{ hashivault__user }}"
+        state: absent
+
+    - name: "Delete Hashicorp Vault group | remove | {{ _title_pfx }}"
+      ansible.builtin.group:
+        name: "{{ hashivault__group }}"
+        state: absent

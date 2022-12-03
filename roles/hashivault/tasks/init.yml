@@ -1,0 +1,18 @@
+---
+- name: "Initialize playbook | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  tags: [always, initialize]
+  block:
+
+  - name: "Display title | init | {{ _title_pfx }}"
+    ansible.builtin.debug:
+      msg:
+        - "######################################################################################"
+        - "##                              HASHICORP VAULT SERVER                              ##"
+        - "######################################################################################"
+
+  - name: "Ensure tmp directory exists | init | {{ _title_pfx }}"
+    ansible.builtin.file:
+      path: "{{ hashivault__tmp_dir }}"
+      state: directory
+      mode: 0755
