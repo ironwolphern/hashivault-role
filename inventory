@@ -1,0 +1,3 @@
+[vault]
+vault.example.local  ansible_host=xxx.xxx.xxx.xxx  ansible_user=ansible
+
