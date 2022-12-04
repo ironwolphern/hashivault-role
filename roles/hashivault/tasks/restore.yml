@@ -1,0 +1,29 @@
+---
+- name: "Restore backup Hashicorp Vault server | restore | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  become: true
+  tags: restore
+  block:
+
+    - name: "Check required parameters | restore | {{ _title_pfx }}"
+      ansible.builtin.assert:
+        that:
+          - "{{ item }}|d('',true)|length > 0"
+        fail_msg: "Required parameter '{{ item }}' is not defined."
+        success_msg: "Required parameter '{{ item }}' is ok."
+        quiet: true
+      loop:
+        - hashivault__restore_file_path
+
+    - name: "Check restore file exists | restore | {{ _title_pfx }}"
+      ansible.builtin.stat:
+        path: "{{ hashivault__restore_file_path }}"
+      register: _hashivault__restore_stat
+      when: hashivault__restore_file_path is defined
+
+    - name: "Restore backup Hashicorp Vault server | restore | {{ _title_pfx }}"
+      ansible.builtin.command:
+        cmd: "vault operator raft snapshot restore -force {{ hashivault__restore_file_path }}"
+      register: _hashivault__restore
+      changed_when: _hashivault__restore.rc == 0
+      when: hashivault__restore_file_path is defined and _hashivault__restore_stat.stat.exists

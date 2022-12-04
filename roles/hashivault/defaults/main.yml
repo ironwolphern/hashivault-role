@@ -12,7 +12,7 @@ hashivault__install_dir: /opt/vault
 hashivault__config_dir: /etc/vault.d
 
 # Version app
-hashivault__version: 1.12.1
+hashivault__version: 1.12.2
 
 # User and group in server installation
 hashivault__user: vault
@@ -24,3 +24,18 @@ hashivault__server_fqdn: vault.example.local
 # Shares and Threshold to unseal
 hashivault__init_key_shares: 5
 hashivault__init_key_threshold: 3
+
+# Backup parameters
+hashivault__snap_name: backup
+# Backup schedule in cron format
+hashivault__backup_minute: "0"
+hashivault__backup_hour: "0"
+hashivault__backup_weekday: "*"
+# Backup retention in days (0 to disable)
+hashivault__backup_rotate_minute: "0"
+hashivault__backup_rotate_hour: "0"
+hashivault__backup_rotate_weekday: "6"
+hashivault__backup_rotate: 7
+
+# Restore parameters
+hashivault__restore_file_path: ''

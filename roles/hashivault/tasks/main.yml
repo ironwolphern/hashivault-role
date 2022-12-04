@@ -16,7 +16,17 @@
   - name: "Initialize Hashicorp Vault | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
       file: init_vault.yml
-    tags: [never, init_vault, install]
+    tags: [never, initialize]
+
+  - name: "Backup Hashicorp Vault | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: backup.yml
+    tags: [never, backup]
+
+  - name: "Restore Hashicorp Vault | {{ _title_pfx }}"
+    ansible.builtin.import_tasks:
+      file: restore.yml
+    tags: [never, restore]
 
   - name: "Remove Hashicorp Vault | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
