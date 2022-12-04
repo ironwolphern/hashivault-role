@@ -1,12 +1,12 @@
 ---
 - name: "Initialize Hashicorp Vault server | init_vault | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
-  tags: init_vault
+  tags: initialize
   block:
 
     - name: "Initialize Hashicorp Vault server operator | init_vault | {{ _title_pfx }}"
-      ansible.builtin.command: |
-          vault operator init -address=https://{{ hashivault__server_fqdn }}:8200 \
+      ansible.builtin.command:
+        cmd: vault operator init -address=https://{{ hashivault__server_fqdn }}:8200 \
             -key-shares={{ hashivault__init_key_shares }} -key-threshold={{ hashivault__init_key_threshold }} \
             -format=table
       register: _hashivault__init_vault

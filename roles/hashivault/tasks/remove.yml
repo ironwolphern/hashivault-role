@@ -38,3 +38,13 @@
       ansible.builtin.group:
         name: "{{ hashivault__group }}"
         state: absent
+
+    - name: "Enable swap | remove | {{ _title_pfx }}"
+      ansible.builtin.command:
+        cmd: swapon -a
+      when: ansible_virtualization_type != "lxc"
+
+    - name: "Restore swap partition | remove | {{ _title_pfx }}"
+      ansible.builtin.command:
+        cmd: mv /etc/fstab.* /etc/fstab
+      when: ansible_virtualization_type != "lxc"

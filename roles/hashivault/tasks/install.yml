@@ -22,6 +22,19 @@
         state: present
       loop: "{{ hashivault__base_packages }}"
 
+    - name: "Disable swap | install | {{ _title_pfx }}"
+      ansible.builtin.command:
+        cmd: swapoff -a
+      when: ansible_virtualization_type != "lxc"
+
+    - name: "Disable swap partition | install | {{ _title_pfx }}"
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: 'swap'
+        state: absent
+        backup: true
+      when: ansible_virtualization_type != "lxc"
+
     - name: "Create Hashicorp Vault user | install | {{ _title_pfx }}"
       ansible.builtin.user:
         name: "{{ hashivault__user }}"
@@ -47,7 +60,7 @@
         - "{{ hashivault__config_dir }}"
         - "{{ hashivault__install_dir }}"
 
-    - name: "Create Hashicorp Vault directories for tls and plugins | install | {{ _title_pfx }}"
+    - name: "Create Hashicorp Vault directories for tls, data, backup and plugins | install | {{ _title_pfx }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -58,6 +71,7 @@
         - "{{ hashivault__config_dir }}/tls"
         - "{{ hashivault__install_dir }}/plugins"
         - "{{ hashivault__install_dir }}/data"
+        - "{{ hashivault__install_dir }}/backup"
 
     - name: "Download binaries Hashicorp Vault | install | {{ _title_pfx }}"
       ansible.builtin.get_url:
