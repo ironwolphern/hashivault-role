@@ -8,27 +8,27 @@
       file: init.yml
     tags: [always, initialize]
 
-  - name: "Install Hashicorp Vault | {{ _title_pfx }}"
+  - name: "Install or Update Hashicorp Vault server | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
       file: install.yml
-    tags: [never, install]
+    tags: [never, install, update]
 
-  - name: "Initialize Hashicorp Vault | {{ _title_pfx }}"
+  - name: "Initialize Hashicorp Vault server | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
       file: init_vault.yml
     tags: [never, initialize]
 
-  - name: "Backup Hashicorp Vault | {{ _title_pfx }}"
+  - name: "Backup Hashicorp Vault server | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
       file: backup.yml
     tags: [never, backup]
 
-  - name: "Restore Hashicorp Vault | {{ _title_pfx }}"
+  - name: "Restore backup Hashicorp Vault server | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
       file: restore.yml
     tags: [never, restore]
 
-  - name: "Remove Hashicorp Vault | {{ _title_pfx }}"
+  - name: "Remove Hashicorp Vault server | {{ _title_pfx }}"
     ansible.builtin.import_tasks:
       file: remove.yml
     tags: [never, remove]

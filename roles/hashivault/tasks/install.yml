@@ -2,7 +2,7 @@
 - name: "Install Hashicorp Vault server | install | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
   become: true
-  tags: install
+  tags: [install, update]
   block:
 
     - name: "Check required parameters | install | {{ _title_pfx }}"
@@ -34,6 +34,16 @@
         state: absent
         backup: true
       when: ansible_virtualization_type != "lxc"
+
+    - name: "Disable shell history for new users | install | {{ _title_pfx }}"
+      ansible.builtin.lineinfile:
+        path: /etc/profile
+        line: 'set +o history'
+
+    - name: "Disable shell history for user | install | {{ _title_pfx }}"
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: 'set +o history'
 
     - name: "Create Hashicorp Vault user | install | {{ _title_pfx }}"
       ansible.builtin.user:
@@ -87,6 +97,7 @@
         group: "{{ hashivault__group }}"
         mode: 0750
         remote_src: true
+        keep_newer: true
 
     - name: "Set binaries Hashicorp Vault capabilities | install | {{ _title_pfx }}"
       community.general.capabilities:
