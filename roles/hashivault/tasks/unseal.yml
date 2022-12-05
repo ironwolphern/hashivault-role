@@ -5,7 +5,7 @@
   tags: unseal
   block:
 
-    - name: "Header | install | {{ _title_pfx }}"
+    - name: "Header | unseal | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "--------------------------------------- UNSEAL ---------------------------------------"
 

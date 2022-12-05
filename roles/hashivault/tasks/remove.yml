@@ -5,7 +5,7 @@
   tags: remove
   block:
 
-    - name: "Header | install | {{ _title_pfx }}"
+    - name: "Header | remove | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "--------------------------------------- REMOVE ---------------------------------------"
 
