@@ -1,0 +1,55 @@
+---
+- name: "Initialize Hashicorp Vault server | initialize | {{ _title_pfx }}"
+  delegate_to: "{{ hashivault__delegate_to }}"
+  become: true
+  tags: initialize
+  block:
+
+    - name: "Create Hashicorp Vault unseal and token directory | initialize | {{ _title_pfx }}"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0640
+      loop:
+        - "{{ hashivault__config_dir }}/unseal"
+        - "{{ hashivault__config_dir }}/token"
+
+    - name: "Initialize Hashicorp Vault server operator | initialize | {{ _title_pfx }}"
+      ansible.builtin.command:
+        cmd: "vault operator init \
+            -key-shares={{ hashivault__init_key_shares }} -key-threshold={{ hashivault__init_key_threshold }} \
+            -format=json"
+      environment:
+        VAULT_ADDR: "https://{{ hashivault__server_fqdn }}:8200"
+      register: _hashivault__initialize
+      run_once: true
+      changed_when: _hashivault__initialize.rc == 0
+
+    - name: "Parse Hashicorp Vault server initialize | initialize | {{ _title_pfx }}"
+      ansible.builtin.set_fact:
+        hashivault__init_parsed_vault: "{{ _hashivault__initialize.stdout | from_json }}"
+
+    - name: "Copy unseal keys to files | initialize | {{ _title_pfx }}"
+      ansible.builtin.copy:
+        content: "{{ item }}"
+        dest: "{{ hashivault__config_dir }}/unseal/hv-{{ _index }}.key"
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0400
+      loop: "{{ hashivault__init_parsed_vault.unseal_keys_b64 | flatten(levels=1) }}"
+      loop_control:
+        index_var: _index
+      run_once: true
+      no_log: true
+
+    - name: "Copy root token to file | initialize | {{ _title_pfx }}"
+      ansible.builtin.copy:
+        content: "{{ hashivault__init_parsed_vault.root_token }}"
+        dest: "{{ hashivault__config_dir }}/token/hv-root.token"
+        owner: "{{ hashivault__user }}"
+        group: "{{ hashivault__group }}"
+        mode: 0400
+      run_once: true
+      no_log: true
