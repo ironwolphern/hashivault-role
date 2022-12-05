@@ -29,7 +29,7 @@
 
     - name: "Parse Hashicorp Vault server initialize | initialize | {{ _title_pfx }}"
       ansible.builtin.set_fact:
-        hashivault__init_parsed_vault: "{{ _hashivault__initialize.stdout | from_json }}"
+        _hashivault__init_parsed_vault: "{{ _hashivault__initialize.stdout | from_json }}"
 
     - name: "Copy unseal keys to files | initialize | {{ _title_pfx }}"
       ansible.builtin.copy:
@@ -38,7 +38,7 @@
         owner: "{{ hashivault__user }}"
         group: "{{ hashivault__group }}"
         mode: 0400
-      loop: "{{ hashivault__init_parsed_vault.unseal_keys_b64 | flatten(levels=1) }}"
+      loop: "{{ _hashivault__init_parsed_vault.unseal_keys_b64 | flatten(levels=1) }}"
       loop_control:
         index_var: _index
       run_once: true
@@ -46,7 +46,7 @@
 
     - name: "Copy root token to file | initialize | {{ _title_pfx }}"
       ansible.builtin.copy:
-        content: "{{ hashivault__init_parsed_vault.root_token }}"
+        content: "{{ _hashivault__init_parsed_vault.root_token }}"
         dest: "{{ hashivault__config_dir }}/token/hv-root.token"
         owner: "{{ hashivault__user }}"
         group: "{{ hashivault__group }}"
