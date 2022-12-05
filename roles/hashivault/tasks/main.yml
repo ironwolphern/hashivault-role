@@ -23,10 +23,20 @@
         file: unseal.yml
       tags: [unseal]
 
-    - name: "Backup Hashicorp Vault server | {{ _title_pfx }}"
+    - name: "Post-install Hashicorp Vault server | {{ _title_pfx }}"
       ansible.builtin.import_tasks:
-        file: backup.yml
-      tags: [never, backup]
+        file: post_install.yml
+      tags: [post_install]
+
+    - name: "Backup Hashicorp Vault server Auto | {{ _title_pfx }}"
+      ansible.builtin.import_tasks:
+        file: backup_auto.yml
+      tags: [never, backup_auto]
+
+    - name: "Backup Hashicorp Vault server Manual | {{ _title_pfx }}"
+      ansible.builtin.import_tasks:
+        file: backup_manual.yml
+      tags: [never, backup_manual]
 
     - name: "Restore backup Hashicorp Vault server | {{ _title_pfx }}"
       ansible.builtin.import_tasks:
