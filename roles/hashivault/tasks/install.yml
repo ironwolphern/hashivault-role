@@ -86,6 +86,7 @@
         - "{{ hashivault__install_dir }}/plugins"
         - "{{ hashivault__install_dir }}/data"
         - "{{ hashivault__install_dir }}/backup"
+        - "{{ hashivault__install_dir }}/log"
 
     - name: "Download binaries Hashicorp Vault | install | {{ _title_pfx }}"
       ansible.builtin.get_url:
