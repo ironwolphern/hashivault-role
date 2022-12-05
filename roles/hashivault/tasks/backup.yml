@@ -5,6 +5,11 @@
   tags: backup
   block:
 
+    - name: "Header | install | {{ _title_pfx }}"
+      ansible.builtin.debug:
+        msg: "----------------------------------- BACKUP / AUTO ------------------------------------"
+      tags: auto
+
     - name: "Backup Hashicorp Vault server automatic | backup | {{ _title_pfx }}"
       ansible.builtin.cron:
         name: "Backup Hashicorp Vault server automatic"
@@ -28,6 +33,11 @@
         cron_file: hashivault_backup_rotate
       when: hashivault__backup_rotate > 0
       tags: auto
+
+    - name: "Header | install | {{ _title_pfx }}"
+      ansible.builtin.debug:
+        msg: "----------------------------------- BACKUP / MANUAL ----------------------------------"
+      tags: manual
 
     - name: "Backup Hashicorp Vault server manual | backup | {{ _title_pfx }}"
       ansible.builtin.command:

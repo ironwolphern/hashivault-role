@@ -5,6 +5,10 @@
   tags: restore
   block:
 
+    - name: "Header | install | {{ _title_pfx }}"
+      ansible.builtin.debug:
+        msg: "-------------------------------------- RESTORE ---------------------------------------"
+
     - name: "Check required parameters | restore | {{ _title_pfx }}"
       ansible.builtin.assert:
         that:

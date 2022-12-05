@@ -5,6 +5,10 @@
   tags: unseal
   block:
 
+    - name: "Header | install | {{ _title_pfx }}"
+      ansible.builtin.debug:
+        msg: "--------------------------------------- UNSEAL ---------------------------------------"
+
     - name: "Check if Hashicorp Vault server is already unsealed | unseal | {{ _title_pfx }}"
       ansible.builtin.shell:
         cmd: "vault status -format=yaml |grep -q 'sealed: false'"

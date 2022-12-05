@@ -5,6 +5,10 @@
   tags: [install, update]
   block:
 
+    - name: "Header | install | {{ _title_pfx }}"
+      ansible.builtin.debug:
+        msg: "---------------------------------- INSTALL / UPDATE ----------------------------------"
+
     - name: "Check required parameters | install | {{ _title_pfx }}"
       ansible.builtin.assert:
         that:

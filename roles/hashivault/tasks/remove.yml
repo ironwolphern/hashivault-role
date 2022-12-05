@@ -5,6 +5,10 @@
   tags: remove
   block:
 
+    - name: "Header | install | {{ _title_pfx }}"
+      ansible.builtin.debug:
+        msg: "--------------------------------------- REMOVE ---------------------------------------"
+
     - name: "Stop Hashicorp Vault service | remove | {{ _title_pfx }}"
       ansible.builtin.systemd:
         name: vault
