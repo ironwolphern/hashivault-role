@@ -1,10 +1,7 @@
 .DS_Store
-*.pem
-*.crt
-*.cer
-*.pfx
-*.p12
-*.p7b
-*.key
+roles/hashivault/files/*.pem
+roles/hashivault/files/*.crt
+roles/hashivault/files/*.cer
+roles/hashivault/files/*.key
 *.log
 *.log.*
