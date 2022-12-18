@@ -1,15 +1,15 @@
 ---
-- name: "Restore backup Hashicorp Vault server | restore | {{ _title_pfx }}"
+- name: "Restore backup Hashicorp Vault server | Restore | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
   become: true
   tags: restore
   block:
 
-    - name: "Header | restore | {{ _title_pfx }}"
+    - name: "Header | Restore | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "-------------------------------------- RESTORE ---------------------------------------"
 
-    - name: "Check required parameters | restore | {{ _title_pfx }}"
+    - name: "Check required parameters | Restore | {{ _title_pfx }}"
       ansible.builtin.assert:
         that:
           - "{{ item }}|d('',true)|length > 0"
@@ -19,13 +19,13 @@
       loop:
         - hashivault__restore_file_path
 
-    - name: "Check restore file exists | restore | {{ _title_pfx }}"
+    - name: "Check restore file exists | Restore | {{ _title_pfx }}"
       ansible.builtin.stat:
         path: "{{ hashivault__restore_file_path }}"
       register: _hashivault__restore_stat
       when: hashivault__restore_file_path is defined
 
-    - name: "Restore backup Hashicorp Vault server | restore | {{ _title_pfx }}"
+    - name: "Restore backup Hashicorp Vault server | Restore | {{ _title_pfx }}"
       ansible.builtin.command:
         cmd: "vault operator raft snapshot restore -force {{ hashivault__restore_file_path }}"
       environment:

@@ -1,15 +1,15 @@
 ---
-- name: "Unseal Hashicorp Vault server | unseal | {{ _title_pfx }}"
+- name: "Unseal Hashicorp Vault server | Unseal | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
   become: true
   tags: unseal
   block:
 
-    - name: "Header | unseal | {{ _title_pfx }}"
+    - name: "Header | Unseal | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "--------------------------------------- UNSEAL ---------------------------------------"
 
-    - name: "Check if Hashicorp Vault server is already unsealed | unseal | {{ _title_pfx }}"
+    - name: "Check if Hashicorp Vault server is already unsealed | Unseal | {{ _title_pfx }}"
       ansible.builtin.shell:
         cmd: "vault status -format=yaml |grep -q 'sealed: false'"
       environment:
@@ -18,18 +18,18 @@
       changed_when: _hashivault__unseal_status.rc != 0
       failed_when: _hashivault__unseal_status.rc not in [ 0, 1 ]
 
-    - name: "Process unseal Hashicorp Vault server | unseal | {{ _title_pfx }}"
+    - name: "Process unseal Hashicorp Vault server | Unseal | {{ _title_pfx }}"
       when: _hashivault__unseal_status.rc != 0
       block:
 
-        - name: "Find unseal keys | unseal | {{ _title_pfx }}"
+        - name: "Find unseal keys | Unseal | {{ _title_pfx }}"
           ansible.builtin.find:
             paths: "{{ hashivault__config_dir }}/unseal"
             patterns: '*.key'
             file_type: file
           register: _hashivault__unseal_path_keys
 
-        - name: "Read unseal keys from files | unseal | {{ _title_pfx }}"
+        - name: "Read unseal keys from files | Unseal | {{ _title_pfx }}"
           ansible.builtin.command:
             cmd: "cat {{ item.path }}"
           register: _hashivault__unseal_keys
@@ -37,7 +37,7 @@
           loop: "{{ _hashivault__unseal_path_keys.files }}"
           no_log: true
 
-        - name: "Unseal Hashicorp Vault server | unseal | {{ _title_pfx }}"
+        - name: "Unseal Hashicorp Vault server | Unseal | {{ _title_pfx }}"
           ansible.builtin.command:
             cmd: "vault operator unseal {{ item.stdout }}"
           environment:

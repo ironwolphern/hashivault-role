@@ -1,15 +1,15 @@
 ---
-- name: "Initialize Hashicorp Vault server | initialize | {{ _title_pfx }}"
+- name: "Initialize Hashicorp Vault server | Initialize | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
   become: true
   tags: initialize
   block:
 
-    - name: "Header | initialize | {{ _title_pfx }}"
+    - name: "Header | Initialize | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "----------------------------------- INITIALIZATION -----------------------------------"
 
-    - name: "Create Hashicorp Vault unseal and token directory | initialize | {{ _title_pfx }}"
+    - name: "Create Hashicorp Vault unseal and token directory | Initialize | {{ _title_pfx }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -20,7 +20,7 @@
         - "{{ hashivault__config_dir }}/unseal"
         - "{{ hashivault__config_dir }}/token"
 
-    - name: "Initialize Hashicorp Vault server operator | initialize | {{ _title_pfx }}"
+    - name: "Initialize Hashicorp Vault server operator | Initialize | {{ _title_pfx }}"
       ansible.builtin.command:
         cmd: "vault operator init \
             -key-shares={{ hashivault__init_key_shares }} -key-threshold={{ hashivault__init_key_threshold }} \
@@ -31,11 +31,11 @@
       run_once: true
       changed_when: _hashivault__initialize.rc == 0
 
-    - name: "Parse Hashicorp Vault server initialize | initialize | {{ _title_pfx }}"
+    - name: "Parse Hashicorp Vault server initialize | Initialize | {{ _title_pfx }}"
       ansible.builtin.set_fact:
         _hashivault__init_parsed_vault: "{{ _hashivault__initialize.stdout | from_json }}"
 
-    - name: "Copy unseal keys to files | initialize | {{ _title_pfx }}"
+    - name: "Copy unseal keys to files | Initialize | {{ _title_pfx }}"
       ansible.builtin.copy:
         content: "{{ item }}"
         dest: "{{ hashivault__config_dir }}/unseal/hv-{{ _index }}.key"
@@ -48,7 +48,7 @@
       run_once: true
       no_log: true
 
-    - name: "Copy root token to file | initialize | {{ _title_pfx }}"
+    - name: "Copy root token to file | Initialize | {{ _title_pfx }}"
       ansible.builtin.copy:
         content: "{{ _hashivault__init_parsed_vault.root_token }}"
         dest: "{{ hashivault__config_dir }}/token/hv-root.token"

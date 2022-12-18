@@ -1,15 +1,15 @@
 ---
-- name: "Post-install Hashicorp Vault server | post_install | {{ _title_pfx }}"
+- name: "Post-install Hashicorp Vault server | Post_install | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
   become: true
   tags: post_install
   block:
 
-    - name: "Header | post_install | {{ _title_pfx }}"
+    - name: "Header | Post_install | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "------------------------------------ POST_INSTALL ------------------------------------"
 
-    - name: "Login to Hashicorp Vault server | post_install | {{ _title_pfx }}"
+    - name: "Login to Hashicorp Vault server | Post_install | {{ _title_pfx }}"
       ansible.builtin.command:
         cmd: "vault login {{ _hashivault__init_parsed_vault.root_token }}"
       environment:
@@ -19,7 +19,7 @@
       run_once: true
       no_log: true
 
-    - name: "Enable Hashicorp Vault server audit device | post_install | {{ _title_pfx }}"
+    - name: "Enable Hashicorp Vault server audit device | Post_install | {{ _title_pfx }}"
       ansible.builtin.command:
         cmd: "vault audit enable -local file file_path={{ hashivault__install_dir }}/log/vault_audit.log"
       environment:

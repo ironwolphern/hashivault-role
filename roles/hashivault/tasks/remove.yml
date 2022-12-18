@@ -1,26 +1,26 @@
 ---
-- name: "Remove Hashicorp Vault server | remove | {{ _title_pfx }}"
+- name: "Remove Hashicorp Vault server | Remove | {{ _title_pfx }}"
   delegate_to: "{{ hashivault__delegate_to }}"
   become: true
   tags: remove
   block:
 
-    - name: "Header | remove | {{ _title_pfx }}"
+    - name: "Header | Remove | {{ _title_pfx }}"
       ansible.builtin.debug:
         msg: "--------------------------------------- REMOVE ---------------------------------------"
 
-    - name: "Stop Hashicorp Vault service | remove | {{ _title_pfx }}"
+    - name: "Stop Hashicorp Vault service | Remove | {{ _title_pfx }}"
       ansible.builtin.systemd:
         name: vault
         state: stopped
         enabled: false
 
-    - name: "Remove Hashicorp Vault service | remove | {{ _title_pfx }}"
+    - name: "Remove Hashicorp Vault service | Remove | {{ _title_pfx }}"
       ansible.builtin.file:
         path: /etc/systemd/system/vault.service
         state: absent
 
-    - name: "Remove Hashicorp Vault directories | remove | {{ _title_pfx }}"
+    - name: "Remove Hashicorp Vault directories | Remove | {{ _title_pfx }}"
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
@@ -28,27 +28,27 @@
         - "{{ hashivault__config_dir }}"
         - "{{ hashivault__install_dir }}"
 
-    - name: "Unset Hashicorp Vault path env | remove | {{ _title_pfx }}"
+    - name: "Unset Hashicorp Vault path env | Remove | {{ _title_pfx }}"
       ansible.builtin.file:
         path: /etc/profile.d/hashivault.sh
         state: absent
 
-    - name: "Delete Hashicorp Vault user | remove | {{ _title_pfx }}"
+    - name: "Delete Hashicorp Vault user | Remove | {{ _title_pfx }}"
       ansible.builtin.user:
         name: "{{ hashivault__user }}"
         state: absent
 
-    - name: "Delete Hashicorp Vault group | remove | {{ _title_pfx }}"
+    - name: "Delete Hashicorp Vault group | Remove | {{ _title_pfx }}"
       ansible.builtin.group:
         name: "{{ hashivault__group }}"
         state: absent
 
-    - name: "Enable swap | remove | {{ _title_pfx }}"
+    - name: "Enable swap | Remove | {{ _title_pfx }}"
       ansible.builtin.command:
         cmd: swapon -a
       when: ansible_virtualization_type != "lxc"
 
-    - name: "Restore swap partition | remove | {{ _title_pfx }}"
+    - name: "Restore swap partition | Remove | {{ _title_pfx }}"
       ansible.builtin.command:
         cmd: mv /etc/fstab.* /etc/fstab
       when: ansible_virtualization_type != "lxc"

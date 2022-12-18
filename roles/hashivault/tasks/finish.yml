@@ -4,7 +4,7 @@
   tags: [always, finalize]
   block:
 
-  - name: "Clean tmp files and directories | finish | {{ _title_pfx }}"
+  - name: "Clean tmp files and directories | Finish | {{ _title_pfx }}"
     ansible.builtin.file:
       path: "{{ hashivault__tmp_dir }}"
       state: absent
