@@ -51,7 +51,7 @@ There are no dependencies.
 
 This is an example of use role with optionals and required parameters:
 
-*example.yml*
+*play-hv.yml*
 ```yaml
     - hosts: vault
       roles:
@@ -65,23 +65,23 @@ These are some examples of the use of this playbook with the different tags that
 
 Install and configure full
 ```bash
-  ansible-playbook -i inventory example.yml
+  ansible-playbook -i inventory play-hv.yml
 ```
 Uninstall
 ```bash
-  ansible-playbook -i inventory example.yml -t remove
+  ansible-playbook -i inventory play-hv.yml -t remove
 ```
 Set backup auto
 ```bash
-  ansible-playbook -i inventory example.yml -t backup_auto
+  ansible-playbook -i inventory play-hv.yml -t backup_auto
 ```
 backup manual with name
 ```bash
-  ansible-playbook -i inventory example.yml -t backup_manual -e hashivault__snap_name=my_backup
+  ansible-playbook -i inventory play-hv.yml -t backup_manual -e hashivault__snap_name=my_backup
 ```
 Unseal instance
 ```bash
-  ansible-playbook -i inventory example.yml -t unseal
+  ansible-playbook -i inventory play-hv.yml -t unseal
 ```
 
 *License*
