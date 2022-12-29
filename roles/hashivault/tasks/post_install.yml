@@ -17,7 +17,7 @@
       register: _hashivault__login
       changed_when: _hashivault__login.rc == 0
       run_once: true
-      no_log: true
+      no_log: "{{ not hashivault__debugger }}"
 
     - name: "Enable Hashicorp Vault server audit device | Post_install | {{ _title_pfx }}"
       ansible.builtin.command:

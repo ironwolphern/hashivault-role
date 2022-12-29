@@ -42,3 +42,6 @@ hashivault__backup_rotate: 7
 
 # Restore parameters
 hashivault__restore_file_path: ''
+
+# Debug logs
+hashivault__debugger: false

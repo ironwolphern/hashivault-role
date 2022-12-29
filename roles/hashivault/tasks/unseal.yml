@@ -35,7 +35,7 @@
           register: _hashivault__unseal_keys
           changed_when: _hashivault__unseal_keys.rc == 0
           loop: "{{ _hashivault__unseal_path_keys.files }}"
-          no_log: true
+          no_log: "{{ not hashivault__debugger }}"
 
         - name: "Unseal Hashicorp Vault server | Unseal | {{ _title_pfx }}"
           ansible.builtin.command:
@@ -45,4 +45,4 @@
           register: _hashivault__unseal
           changed_when: _hashivault__unseal.rc == 0
           loop: "{{ _hashivault__unseal_keys.results }}"
-          no_log: true
+          no_log: "{{ not hashivault__debugger }}"
