@@ -25,6 +25,9 @@ hashivault__server_fqdn: vault.example.local
 hashivault__init_key_shares: 5
 hashivault__init_key_threshold: 3
 
+# KV secret engine
+hashivault__kv_secret_engine_path: secret
+
 # Backup parameters
 hashivault__snap_name: backup
 # Backup schedule in cron format
